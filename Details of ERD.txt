@@ -1,0 +1,46 @@
+Hello Everyone, I have designed an ERD on Digital Wallet System that supports user onboarding, KYC verification, wallet funding, peer-to-peer transfers, merchant payments etc. Each business operation is reflected through relational entities such as Users, Wallets, Transactions, KYC, Bank Accounts, Transaction Limits, and Merchants.
+✅ Summary of All Relationships
+1. Users → Wallets (1 : M)
+One user can have multiple wallets.
+Implemented by:
+Wallets.user_id → Users.user_id (FK)
+
+2. Users → KYC (1 : 1)
+Each user has only one KYC record.
+Implemented by:
+KYC.user_id → Users.user_id (FK + UNIQUE)
+
+3. KYC_Level → KYC (1 : M)
+One KYC level (Basic, Standard, Premium) can apply to many users.
+Implemented by:
+KYC.kyc_level_id → KYC_Level.kyc_level_id
+
+4. KYC_Level → Transaction_Limit (1 : M)
+One level can define multiple limit rules (based on wallet type).
+Implemented by:
+Transaction_Limit.kyc_level_id → KYC_Level.kyc_level_id
+
+5. Wallets → Transactions (1 : M) [Sender]
+One wallet can send many transactions.
+Implemented by:
+Transactions.from_wallet_id → Wallets.wallet_id
+
+6. Wallets → Transactions (1 : M) [Receiver]
+One wallet can receive many transactions.
+Implemented by:
+Transactions.to_wallet_id → Wallets.wallet_id
+
+7. Wallets ↔ Wallets (M : N via Transactions)
+A wallet can transact with many other wallets.
+This many-to-many relationship is resolved using the Transactions table as an associative entity.
+
+8. Wallets → Bank_Accounts (1 : M)
+One wallet can link multiple bank accounts or cards.
+Implemented by:
+Bank_Accounts.wallet_id → Wallets.wallet_id
+
+9. Users → Merchants (1 : 0..1)
+A user may become a merchant.
+Each merchant must be a registered user.
+Implemented by:
+Merchants.user_id → Users.user_id (FK + UNIQUE)
